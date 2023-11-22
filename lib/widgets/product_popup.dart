@@ -45,7 +45,6 @@ class _ProductPopUpState extends State<ProductPopUp> {
       descController.text = widget.productModel!.desc;
       expiredController.text = DateFormat('dd-MM-yyyy')
           .format(widget.productModel!.expiredDate.toDate());
-
       isEdit = true;
     }
   }
@@ -129,6 +128,7 @@ class _ProductPopUpState extends State<ProductPopUp> {
                 ),
               ),
             );
+            print(imageUrl);
             navigator.pop();
           } else {
             message.removeCurrentSnackBar();
