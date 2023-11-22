@@ -1,4 +1,6 @@
+import 'package:eat_me/pages/qr_generator_page.dart';
 import 'package:eat_me/pages/setting_page.dart';
+import 'package:eat_me/providers/user_provider.dart';
 import 'package:eat_me/shared/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +17,7 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PageProvider pageProvider = Provider.of<PageProvider>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     // NavBar
     Widget customBottomNavigation() {
@@ -60,7 +63,9 @@ class MainPage extends StatelessWidget {
           }
         case 1:
           {
-            return const QRCodePage();
+            return userProvider.user.role == "user"
+                ? const QRCodePage()
+                : const QRGenerator();
           }
         case 2:
           {

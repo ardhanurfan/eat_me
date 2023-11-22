@@ -45,15 +45,12 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              "Eat Me",
-              style: whiteText.copyWith(
-                fontWeight: bold,
-                fontSize: 32,
-              ),
+            Image.asset(
+              'assets/logo.png',
+              width: 250,
             ),
             Text(
-              "expired date apps",
+              "Expired Date App",
               style: whiteText.copyWith(
                 fontWeight: regular,
                 fontSize: 24,

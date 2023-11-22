@@ -41,6 +41,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       obscureText: widget.isPassword ? isObscure : false,
       cursorColor: primaryColor,
       decoration: InputDecoration(
+        labelText: widget.hintText,
+        labelStyle: greyText,
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         suffixIcon: Visibility(
           visible: widget.isPassword,
@@ -63,8 +65,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           ),
         ),
         prefixIcon: widget.icon,
-        hintText: widget.hintText,
-        hintStyle: greyText,
+        // hintText: widget.hintText,
+        // hintStyle: greyText,
         focusColor: primaryColor,
         border: OutlineInputBorder(
             borderRadius:

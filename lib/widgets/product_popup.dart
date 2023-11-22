@@ -205,92 +205,92 @@ class _ProductPopUpState extends State<ProductPopUp> {
         ),
         content: Form(
           key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                CustomTextFormField(
-                  controller: titleController,
-                  hintText: 'Product Name',
-                  radiusBorder: defaultRadius,
-                ),
-                const SizedBox(height: 12),
-                CustomTextFormField(
-                  controller: priceController,
-                  hintText: 'Price',
-                  radiusBorder: defaultRadius,
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 12),
-                CustomTextFormField(
-                  controller: descController,
-                  hintText: 'Desctiption',
-                  radiusBorder: defaultRadius,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'This field is required';
-                    }
-                    return null; // Return null if the field is valid
-                  },
-                  controller: expiredController,
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                      icon: Icon(Icons.calendar_today),
-                      labelText: "Enter Expired"),
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101));
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              CustomTextFormField(
+                controller: titleController,
+                hintText: 'Product Name',
+                radiusBorder: defaultRadius,
+              ),
+              const SizedBox(height: 12),
+              CustomTextFormField(
+                controller: priceController,
+                hintText: 'Price',
+                radiusBorder: defaultRadius,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 12),
+              CustomTextFormField(
+                controller: descController,
+                hintText: 'Desctiption',
+                radiusBorder: defaultRadius,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'This field is required';
+                  }
+                  return null; // Return null if the field is valid
+                },
+                controller: expiredController,
+                decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    icon: Icon(Icons.calendar_today),
+                    labelText: "Enter Expired"),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101));
 
-                    if (pickedDate != null) {
-                      String formattedDate =
-                          DateFormat('dd-MM-yyyy').format(pickedDate);
+                  if (pickedDate != null) {
+                    String formattedDate =
+                        DateFormat('dd-MM-yyyy').format(pickedDate);
 
-                      setState(() {
-                        expiredController.text =
-                            formattedDate; //set output date to TextField value.
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 12),
-                imageFile != null
-                    ? Image.file(
-                        imageFile!,
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      )
-                    : (widget.productModel != null)
-                        ? Image.network(
-                            widget.productModel!.imageUrl,
-                            height: 200,
-                            width: 200,
-                            fit: BoxFit.cover,
-                          )
-                        : const SizedBox(),
-                const SizedBox(height: 12),
-                CustomButton(
-                  radiusButton: defaultRadius,
-                  buttonColor: primaryColor,
-                  buttonText: isEdit ? "Edit Image" : "Add Image",
-                  widthButton: double.infinity,
-                  isLoading: isLoading,
-                  onPressed: () async {
-                    await imageTool.pickImage();
                     setState(() {
-                      imageFile = imageTool.croppedImageFile;
+                      expiredController.text =
+                          formattedDate; //set output date to TextField value.
                     });
-                  },
-                  heightButton: 50,
-                )
-              ],
-            ),
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+              imageFile != null
+                  ? Image.file(
+                      imageFile!,
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    )
+                  : (widget.productModel != null)
+                      ? Image.network(
+                          widget.productModel!.imageUrl,
+                          height: 200,
+                          width: 200,
+                          fit: BoxFit.cover,
+                        )
+                      : const SizedBox(),
+              const SizedBox(height: 12),
+              CustomButton(
+                radiusButton: defaultRadius,
+                buttonColor: primaryColor,
+                buttonText: isEdit ? "Edit Image" : "Add Image",
+                widthButton: double.infinity,
+                isLoading: isLoading,
+                onPressed: () async {
+                  await imageTool.pickImage();
+                  setState(() {
+                    imageFile = imageTool.croppedImageFile;
+                  });
+                },
+                heightButton: 50,
+              )
+            ],
           ),
         ));
   }

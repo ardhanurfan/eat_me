@@ -14,18 +14,20 @@ class NavigationItems extends StatelessWidget {
   Widget build(BuildContext context) {
     PageProvider pageProvider = Provider.of<PageProvider>(context);
 
-    return GestureDetector(
-      onTap: () {
-        pageProvider.setCurrPage = index;
-      },
+    return SizedBox(
+      width: 50,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const SizedBox(),
-          Icon(
-            icon,
-            color: pageProvider.currPage == index ? primaryColor : grey,
-          ),
+          IconButton(
+              onPressed: () {
+                pageProvider.setCurrPage = index;
+              },
+              icon: Icon(
+                icon,
+                color: pageProvider.currPage == index ? primaryColor : grey,
+              )),
           Container(
             height: 2,
             width: 30,

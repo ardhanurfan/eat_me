@@ -46,14 +46,84 @@ class ProductTile extends StatelessWidget {
       }
     }
 
+    Widget popUp() {
+      return AlertDialog(
+        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(12),
+          ),
+        ),
+        actions: [
+          TextButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(secondaryColor),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Close',
+              style: whiteText,
+            ),
+          ),
+        ],
+        title: Column(
+          children: [
+            Text(
+              product.title,
+              style: primaryColorText.copyWith(fontSize: 20, fontWeight: bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              "By ${product.uploader.name}",
+              style: greyText.copyWith(
+                fontSize: 12,
+                fontWeight: semibold,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Expired Date",
+              style: darkText.copyWith(
+                fontSize: 16,
+                fontWeight: bold,
+              ),
+            ),
+            Text(
+              DateFormat('dd-MMMM-yyyy').format(product.expiredDate.toDate()),
+              style: darkText.copyWith(
+                fontSize: 16,
+                fontWeight: bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Deskripsi",
+              style: darkText.copyWith(fontSize: 14, fontWeight: bold),
+            ),
+            Text(
+              product.desc,
+              style: darkText.copyWith(fontSize: 10),
+            ),
+          ],
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => ProductPage(product: product),
-        //   ),
-        // );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return popUp();
+          },
+        );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
