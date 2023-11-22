@@ -2,6 +2,7 @@ import 'package:eat_me/pages/main_page.dart';
 import 'package:eat_me/pages/sign_in_page.dart';
 import 'package:eat_me/pages/sign_up_page.dart';
 import 'package:eat_me/pages/splash_screen.dart';
+import 'package:eat_me/providers/article_provider.dart';
 import 'package:eat_me/providers/page_provider.dart';
 import 'package:eat_me/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => PageProvider()),
+        ChangeNotifierProvider(create: (context) => ArticleProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: MaterialApp(

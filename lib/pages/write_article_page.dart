@@ -1,6 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eat_me/models/article_model.dart';
+import 'package:eat_me/providers/user_provider.dart';
+import 'package:eat_me/services/article_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../services/image_service.dart';
 import '../shared/theme.dart';
@@ -8,7 +13,9 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_text_form_field.dart';
 
 class WriteArticlePage extends StatefulWidget {
-  const WriteArticlePage({super.key});
+  const WriteArticlePage({super.key, this.articleModel});
+
+  final ArticleModel? articleModel;
 
   @override
   State<WriteArticlePage> createState() => _WriteArticlePageState();
@@ -22,9 +29,111 @@ class _WriteArticlePageState extends State<WriteArticlePage> {
 
   TextEditingController titleController = TextEditingController(text: '');
   TextEditingController contentController = TextEditingController(text: '');
+  @override
+  void initState() {
+    super.initState();
+    if (widget.articleModel != null) {
+      titleController.text = widget.articleModel!.title;
+      contentController.text = widget.articleModel!.content;
+      isEdit = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    final message = ScaffoldMessenger.of(context);
+    handleSave() async {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        if (isEdit) {
+          String imageUrl = '';
+          if (imageFile != null) {
+            imageUrl = await imageTool.uploadImage(imageFile!, 'articles');
+            await imageTool.deleteImage(widget.articleModel!.thumbnail);
+          }
+
+          await ArticleService().updateArticle(
+            ArticleModel(
+                id: widget.articleModel!.id,
+                title: titleController.text,
+                author: widget.articleModel!.author,
+                content: contentController.text,
+                date: Timestamp.now(),
+                thumbnail: imageUrl.isEmpty
+                    ? widget.articleModel!.thumbnail
+                    : imageUrl),
+          );
+          message.removeCurrentSnackBar();
+          message.showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.green,
+              content: Text(
+                "Edit Article Success",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+          // ignore: use_build_context_synchronously
+          Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
+        } else {
+          if (imageFile != null) {
+            String imageUrl =
+                await imageTool.uploadImage(imageFile!, "articles");
+            await ArticleService().addArticle(
+              ArticleModel(
+                  id: "id",
+                  title: titleController.text,
+                  content: contentController.text,
+                  author: userProvider.user.name,
+                  thumbnail: imageUrl,
+                  date: Timestamp.now()),
+            );
+            message.removeCurrentSnackBar();
+            message.showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(
+                  "Add Article Success",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            // ignore: use_build_context_synchronously
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/main', (route) => false);
+          } else {
+            message.removeCurrentSnackBar();
+            message.showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  "Image not found",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        message.removeCurrentSnackBar();
+        message.showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              "Add Article Failed",
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
+
     Widget header() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,14 +160,14 @@ class _WriteArticlePageState extends State<WriteArticlePage> {
                   height: 200,
                   fit: BoxFit.cover,
                 )
-              // : (widget.productModel != null)
-              //     ? Image.network(
-              //         widget.productModel!.imageUrl,
-              //         height: 200,
-              //         width: 200,
-              //         fit: BoxFit.cover,
-              //       )
-              : const SizedBox(),
+              : (widget.articleModel != null)
+                  ? Image.network(
+                      widget.articleModel!.thumbnail,
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                    )
+                  : const SizedBox(),
           const SizedBox(height: 12),
           CustomButton(
             radiusButton: defaultRadius,
@@ -92,6 +201,7 @@ class _WriteArticlePageState extends State<WriteArticlePage> {
             controller: contentController,
             keyboardType: TextInputType.multiline,
             minLines: 15,
+            maxLines: null,
             decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(defaultRadius),
@@ -124,6 +234,20 @@ class _WriteArticlePageState extends State<WriteArticlePage> {
           children: [
             header(),
             inputBody(),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: CustomButton(
+                  isLoading: isLoading,
+                  radiusButton: defaultRadius,
+                  buttonColor: primaryColor,
+                  buttonText: "Save",
+                  widthButton: double.infinity,
+                  onPressed: () async {
+                    await handleSave();
+                    // ignore: use_build_context_synchronously
+                  },
+                  heightButton: 50),
+            )
           ],
         ),
       ),
