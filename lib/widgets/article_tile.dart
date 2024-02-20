@@ -59,7 +59,7 @@ class ArticleTile extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   )
-                : SizedBox(),
+                : const SizedBox(),
             const SizedBox(
               width: 12,
             ),
@@ -95,7 +95,7 @@ class ArticleTile extends StatelessWidget {
               ),
             ),
             Visibility(
-              visible: userProvider.user.role == "user",
+              visible: userProvider.user.role == "penjual",
               child: Container(
                 color: white,
                 child: Column(

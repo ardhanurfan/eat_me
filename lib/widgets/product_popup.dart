@@ -128,7 +128,6 @@ class _ProductPopUpState extends State<ProductPopUp> {
                 ),
               ),
             );
-            print(imageUrl);
             navigator.pop();
           } else {
             message.removeCurrentSnackBar();

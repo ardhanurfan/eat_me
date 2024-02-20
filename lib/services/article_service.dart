@@ -45,7 +45,6 @@ class ArticleService {
     try {
       await _articlesReference.doc(article.id).update(article.toJson());
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -54,7 +53,6 @@ class ArticleService {
     try {
       await _articlesReference.doc(article.id).delete();
     } catch (e) {
-      print(e);
       rethrow;
     }
   }

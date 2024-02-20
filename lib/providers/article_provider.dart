@@ -12,7 +12,6 @@ class ArticleProvider extends ChangeNotifier {
   Future<bool> getArticles() async {
     try {
       _articles = await ArticleService().fetchArticles();
-      print(_articles);
     } catch (e) {
       _errorMessage = e.toString();
       rethrow;

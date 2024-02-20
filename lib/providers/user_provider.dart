@@ -16,7 +16,8 @@ class UserProvider extends ChangeNotifier {
       {required String email,
       required String password,
       required String name,
-      required String username}) async {
+      required String username,
+      required String role}) async {
     try {
       bool isUsernameUsed = !(await UserService()
           .usernameCheck(username: username, isEdit: false));
@@ -25,7 +26,11 @@ class UserProvider extends ChangeNotifier {
         return false;
       } else {
         _user = await AuthService().signup(
-            email: email, name: name, password: password, username: username);
+            email: email,
+            name: name,
+            password: password,
+            username: username,
+            role: role);
         return true;
       }
     } on FirebaseAuthException catch (e) {

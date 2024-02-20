@@ -61,6 +61,14 @@ class QRCodePage extends StatelessWidget {
                 fontWeight: bold,
               ),
             ),
+            const SizedBox(height: 12),
+            Text(
+              "Expired Date",
+              style: darkText.copyWith(
+                fontSize: 16,
+                fontWeight: bold,
+              ),
+            ),
             Text(
               info.expiredDate,
               style: darkText.copyWith(

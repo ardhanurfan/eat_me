@@ -10,17 +10,18 @@ class AuthService {
       {required String name,
       required String username,
       required String email,
-      required String password}) async {
+      required String password,
+      required String role}) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
       UserModel user = UserModel(
-        id: userCredential.user!.uid,
-        email: email,
-        name: name,
-        username: username,
-      );
+          id: userCredential.user!.uid,
+          email: email,
+          name: name,
+          username: username,
+          role: role);
 
       await UserService().setUser(user);
 

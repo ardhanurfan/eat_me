@@ -3,8 +3,10 @@ import 'package:eat_me/services/product_service.dart';
 import 'package:eat_me/widgets/product_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
+import '../providers/user_provider.dart';
 import '../shared/theme.dart';
 
 class ProductTile extends StatelessWidget {
@@ -13,6 +15,7 @@ class ProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     final navigator = Navigator.of(context);
     final message = ScaffoldMessenger.of(context);
     ImageTool imageTool = ImageTool();
@@ -88,6 +91,14 @@ class ProductTile extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text(
+              "Rp${product.price}",
+              style: secondaryColorText.copyWith(
+                fontSize: 16,
+                fontWeight: bold,
+              ),
+            ),
+            const SizedBox(height: 12),
             Text(
               "Expired Date",
               style: darkText.copyWith(
@@ -198,89 +209,92 @@ class ProductTile extends StatelessWidget {
               ],
             ),
             const SizedBox(width: 4),
-            Container(
-              color: white,
-              child: Column(
-                children: [
-                  Material(
-                    color: white,
-                    borderRadius: BorderRadius.circular(defaultRadius),
-                    child: InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ProductPopUp(
-                              productModel: product,
-                            );
-                          },
-                        );
-                      },
+            Visibility(
+              visible: userProvider.user.role == "penjual",
+              child: Container(
+                color: white,
+                child: Column(
+                  children: [
+                    Material(
+                      color: white,
                       borderRadius: BorderRadius.circular(defaultRadius),
-                      child: SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: Center(
-                          child: Icon(
-                            Icons.edit,
-                            color: secondaryColor,
-                            size: 20,
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ProductPopUp(
+                                productModel: product,
+                              );
+                            },
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(defaultRadius),
+                        child: SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: Center(
+                            child: Icon(
+                              Icons.edit,
+                              color: secondaryColor,
+                              size: 20,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Material(
-                    color: white,
-                    borderRadius: BorderRadius.circular(defaultRadius),
-                    child: InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text('Confirm', style: primaryColorText),
-                              content: Text(
-                                'Delete this article?',
-                                style: darkText,
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    'NO',
-                                    style: darkText,
-                                  ),
+                    Material(
+                      color: white,
+                      borderRadius: BorderRadius.circular(defaultRadius),
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('Confirm', style: primaryColorText),
+                                content: Text(
+                                  'Delete this article?',
+                                  style: darkText,
                                 ),
-                                TextButton(
-                                  onPressed: handleDelete,
-                                  child: Text(
-                                    'YES',
-                                    style: darkText,
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'NO',
+                                      style: darkText,
+                                    ),
                                   ),
-                                )
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(defaultRadius),
-                      child: const SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: Center(
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                            size: 20,
+                                  TextButton(
+                                    onPressed: handleDelete,
+                                    child: Text(
+                                      'YES',
+                                      style: darkText,
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(defaultRadius),
+                        child: const SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: Center(
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                              size: 20,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )
           ],

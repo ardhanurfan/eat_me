@@ -117,18 +117,21 @@ class HomePage extends StatelessWidget {
     }
 
     return Scaffold(
-      floatingActionButton: Container(
-        margin: const EdgeInsets.only(bottom: 100),
-        child: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const ProductPopUp();
-              },
-            );
-          },
-          child: const Icon(Icons.add),
+      floatingActionButton: Visibility(
+        visible: userProvider.user.role == "penjual",
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 100),
+          child: FloatingActionButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const ProductPopUp();
+                },
+              );
+            },
+            child: const Icon(Icons.add),
+          ),
         ),
       ),
       body: SafeArea(

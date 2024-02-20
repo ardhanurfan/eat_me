@@ -1,52 +1,49 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eat_me/pages/write_article_page.dart';
-import 'package:eat_me/providers/article_provider.dart';
 import 'package:eat_me/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/article_model.dart';
 import '../shared/theme.dart';
 import '../widgets/article_tile.dart';
 
-class ArticlePage extends StatefulWidget {
+class ArticlePage extends StatelessWidget {
   const ArticlePage({super.key});
 
   @override
-  State<ArticlePage> createState() => _ArticlePageState();
-}
-
-bool isLoading = true;
-
-class _ArticlePageState extends State<ArticlePage> {
-  @override
-  void initState() {
-    getInit();
-    super.initState();
-  }
-
-  getInit() async {
-    isLoading = true;
-    ArticleProvider articleProvider =
-        Provider.of<ArticleProvider>(context, listen: false);
-
-    await articleProvider.getArticles();
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    ArticleProvider articleProvider = Provider.of<ArticleProvider>(context);
     UserProvider userProvider = Provider.of<UserProvider>(context);
     Widget articleList() {
-      return Column(
-        children: articleProvider.articles!.map(
-          (e) {
-            return ArticleTile(
-              article: e,
+      return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance.collection('articles').snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            List<ArticleModel> articles = [];
+            // var articles = snapshot.data!.docs.map((e) {
+            //   ArticleModel.fromJson(e.id, e.data());
+            // }).toList();
+            for (var element in snapshot.data!.docs) {
+              articles.add(ArticleModel.fromJson(element.id, element.data()));
+            }
+            return Column(
+              children: articles.map(
+                (e) {
+                  return ArticleTile(
+                    article: e,
+                  );
+                },
+              ).toList(),
             );
-          },
-        ).toList(),
+          } else {
+            return Center(
+              child: CircularProgressIndicator(
+                color: primaryColor,
+              ),
+            );
+          }
+        },
       );
     }
 
@@ -68,7 +65,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
     return Scaffold(
       floatingActionButton: Visibility(
-        visible: userProvider.user.role == "user",
+        visible: userProvider.user.role == "penjual",
         child: Container(
           margin: const EdgeInsets.only(bottom: 100),
           child: FloatingActionButton(
@@ -94,11 +91,7 @@ class _ArticlePageState extends State<ArticlePage> {
           ),
           children: [
             header(),
-            isLoading
-                ? Center(child: CircularProgressIndicator())
-                : Visibility(
-                    visible: articleProvider.articles!.isNotEmpty,
-                    child: articleList()),
+            articleList(),
           ],
         ),
       ),

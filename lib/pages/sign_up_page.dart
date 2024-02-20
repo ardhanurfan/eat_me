@@ -1,3 +1,4 @@
+import 'package:eat_me/widgets/custom_dropdown_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../shared/theme.dart';
@@ -22,6 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController passwordController =
       TextEditingController(text: '');
   bool isLoading = false;
+  String role = "";
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +38,11 @@ class _SignUpPageState extends State<SignUpPage> {
       });
 
       if (await userProvider.signUp(
-        email: emailController.text,
-        password: passwordController.text,
-        name: fullNameController.text,
-        username: usernameController.text,
-      )) {
+          email: emailController.text,
+          password: passwordController.text,
+          name: fullNameController.text,
+          username: usernameController.text,
+          role: role)) {
         pageProvider.setCurrPage = 0;
         navigator.pushNamedAndRemoveUntil('/main', (route) => false);
       } else {
@@ -177,6 +179,26 @@ class _SignUpPageState extends State<SignUpPage> {
               height: 12,
             ),
             inputPassword(),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Role",
+              style: darkText.copyWith(fontSize: 16, fontWeight: medium),
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            CustomDropdownFormField(
+                hintText: "Select role",
+                items: const ["user", "penjual"],
+                radiusBorder: 12,
+                onChanged: (val) {
+                  if (val != null) {
+                    role = val;
+                    print(val);
+                  }
+                }),
             const SizedBox(
               height: 30,
             ),
